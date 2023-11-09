@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>璃奈ちゃんボードコントローラ(L)</title>
+    <!--キャッシュ保存しない-->
+    <meta http-equiv="Cache-Control" content="no-store">
+    <!--スマホでタップしたときに拡大しない-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+    <!--スタイルシート読み込み-->
+    <link rel="stylesheet" href="./Common.css">
+    <link rel="stylesheet" href="./Controller.css">
+    <!--ステータスバー等の色変更-->
+    <meta name="theme-color" content="#f3db76" />
+</head>
+
+<body onload="getBaseData()">
+    <script>
+        var Def_DATA
+        // Lambda経由で基礎データを取得する.
+        function getBaseData() {
+            // ボードマスタを取得するLambdaへのリンク.
+            var url = "https://7ofbacmkp4wwr3h7pdpdzqkxbm0ykmjs.lambda-url.ap-northeast-1.on.aws/";
+            var XHR = new XMLHttpRequest();
+            XHR.open("GET", url, false);
+            try {
+                XHR.send(null);
+            } catch (err) {
+                console.log(err);
+            }
+            var json = XHR.responseText;
+            Def_DATA = JSON.parse(json);
+            console.log(Def_DATA.length);
+
+            for (var i = 0; i < Def_DATA.length; ++i) {
+                var line = Def_DATA[i];
+                // line = JSON.parse(line);
+                console.log(line);
+
+                // 定義.
+                const parent = document.getElementById("boardbuttons");
+                const newBtn = document.createElement("input");
+                const newSpn = document.createElement("span");
+                const newLbl = document.createElement("label");
+
+                // 各種オプションを設定.
+                newBtn.setAttribute("id", Def_DATA[i]["BOARD"]);
+                newBtn.setAttribute("type", "radio");
+                newBtn.setAttribute("name", "Select");
+                newBtn.onchange = function () {
+                    boardSet(i-1);
+                }
+                newSpn.setAttribute("class", "boardicon");
+                newSpn.innerHTML = Def_DATA[i]["COMMENT"];
+                newLbl.setAttribute("for", Def_DATA[i]["BOARD"]);
+
+                // 追加する.
+                newLbl.appendChild(newSpn);
+                parent.appendChild(newBtn);
+                parent.appendChild(newLbl);
+            }
+        }
+        // 色変更=coloridをセットして送信する.
+        function colorSet(id) {
+            var data = { colorid: id };
+            console.log(id);
+            var XHR = new XMLHttpRequest();
+            XHR.open("POST", "sv.py");
+            XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            XHR.send(EncodeHTMLForm(data));
+        }
+
+        // 表情変更=boardidをセットして送信する.
+        function boardSet(id) {
+            console.log(id);
+            console.log(Def_DATA[0].AUDIO);
+            var data = {
+                BOARD: Def_DATA[id].BOARD,
+                ID: id,
+                AUDIO: Def_DATA[id].AUDIO,
+                LAST_UPDATE: "2023"
+            };
+            PostToServer(data);
+            console.log(data);
+        }
+
+        function PostToServer(json) {
+            // データ整形
+            var json_text = JSON.stringify(json);
+
+            console.log(json_text);
+
+            // ボードトランザクションを取得するLambdaへのリンク.
+            //var url = "https://ej5e4jssi9.execute-api.ap-northeast-1.amazonaws.com/default/RCB_CL";
+            var url = "https://bnrnrllejgy53xgmp775tdqwma0stvsx.lambda-url.ap-northeast-1.on.aws/";
+
+            // データ送信
+            xhr = new XMLHttpRequest;
+            xhr.withCredentials = true;
+            xhr.onload = function() {
+                var res = xhr.responseText;
+                if (res.length > 0) alert(res);
+            };
+            xhr.onerror = function() {
+                alert("Error");
+            }
+            xhr.open('post', url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(json_text);
+        }
+
+        // URLパラメータとして送信できる形式にフォーマットを変更する.
+        function EncodeHTMLForm(data) {
+            var params = [];
+            for (var name in data) {
+                var value = data[name];
+                var param = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+                params.push(param);
+            }
+            return params.join('&').replace(/%20/g, '+');
+        }
+
+        // ボード一覧ファイルから変更ボタンを動的に生成する.
+        function loadFromCsv() {
+            // CSVファイルを読み込む.
+            let srt = new XMLHttpRequest();
+            srt.open("GET", './facelist.csv', false);
+            try {
+                srt.send(null);
+            } catch (err) {
+                console.log(err)
+            }
+
+            // 配列を用意.
+            let csletr = [];
+
+            // 改行ごとに配列化.
+            let lines = srt.responseText.split(/\r\n|\n/);
+
+            // ログに表示.
+            // console.log(lines)
+
+            // 1行ごとに処理.
+            for (let i = 0; i < lines.length; ++i) {
+                let cells = lines[i].split(",");
+                // boardid=99はデータが必要なため本ページの対象外.
+                // boardid=-1は文字が必要なため別ページ.
+                // 順に要素を追加していく.
+                if (cells.length != 1 && cells[0] != "99" && cells[0] != "-1" && cells[0] != "100") {
+                    csletr.push(cells);
+                    // console.log("1番目は" + cells[0].trim());
+
+                    // 定義.
+                    const parent = document.getElementById("boardbuttons");
+                    const newBtn = document.createElement("input");
+                    const newSpn = document.createElement("span");
+                    const newLbl = document.createElement("label");
+
+                    // 各種オプションを設定.
+                    newBtn.setAttribute("id", cells[1].trim());
+                    newBtn.setAttribute("type", "radio");
+                    newBtn.setAttribute("name", "Select");
+                    newBtn.onchange = function () {
+                        boardSet(i);
+                    }
+                    newSpn.setAttribute("class", "boardicon");
+                    newSpn.innerHTML = cells[2].trim();
+                    newLbl.setAttribute("for", cells[1].trim());
+
+                    // 追加する.
+                    newLbl.appendChild(newSpn);
+                    parent.appendChild(newBtn);
+                    parent.appendChild(newLbl);
+                }
+            }
+        }
+
+        async function textSet() {
+            var text = document.getElementById("bbstext").value;
+            // let text_log = document.getElementById('textlog').innerText;
+            if (text == "") {
+                // テキスト未入力の場合.
+                document.getElementById('textlog').innerText = 'テキストが入力されていません...';
+            } else {
+                console.log(text);
+
+                // テキストデータをサーバに送信.
+                var data = { bbstext: text };
+                var XHR = new XMLHttpRequest();
+                XHR.open("POST", "sv.py");
+                XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                XHR.send(EncodeHTMLForm(data));
+                console.log(XHR);
+                await new Promise(s => setTimeout(s, 300));
+                document.getElementById('textlog').innerText = '「' + text + '」が送信されました';
+            }
+
+            // 少し待つ.
+            await new Promise(s => setTimeout(s, 1000));
+
+            // ボタンを未選択状態にする.
+            for (const element of document.getElementsByName('Select')) {
+                element.checked = false;
+            }
+            document.getElementById('textlog').innerText = '\0';
+        }
+    </script>
+
+    <header class="title">
+        <p class="top">璃奈ちゃんボードコントローラ2</p><br>
+    </header>
+
+    <div class="tab_wrap">
+        <!--ボード変更/色変更の切替-->
+        <input id="tab1" type="radio" name="tab_btn" checked>
+        <input id="tab2" type="radio" name="tab_btn">
+        <input id="tab3" type="radio" name="tab_btn">
+
+        <div class="tab_area">
+            <label class="tab1_label" for="tab1">ボード変更</label>
+            <label class="tab2_label" for="tab2">カラー変更</label>
+            <label class="tab3_label" for="tab3">文字入力</label>
+        </div>
+        <div class="panel_area">
+            <!--ボード変更用パネル-->
+            <div id="panel1" class="tab_panel board_panel">
+                <div class="panel_text">
+                    璃奈ちゃんボードの表情を変更できます。
+                </div>
+                <div id="boardbuttons">
+                    <!--ボード変更ボタンが追加される-->
+                </div>
+                <br>
+                <input id="SHUFFLE_BOARD" type="radio" name="Select" onchange="boardSet(100)">
+                <label for="SHUFFLE_BOARD">
+                    <img src="./Niji_Icons/SHUFFLE.png" class="othericon">
+                </label>
+            </div>
+
+            <!--色変更用パネル-->
+            <div id="panel2" class="tab_panel color_panel">
+                <div class="panel_text">
+                    璃奈ちゃんボードの点灯色を変更できます。
+                </div>
+                <div id="colorbuttons">
+                    <input id="Ayumu" type="radio" name="Color" onchange="colorSet(1)">
+                    <label for="Ayumu">
+                        <img src="./Niji_Icons/Ayumu.png" class="membericon">
+                    </label>
+                    <input id="Kasumi" type="radio" name="Color" onchange="colorSet(2)">
+                    <label for="Kasumi">
+                        <img src="./Niji_Icons/Kasumi.png" class="membericon">
+                    </label>
+                    <input id="Shizuku" type="radio" name="Color" onchange="colorSet(3)">
+                    <label for="Shizuku">
+                        <img src="./Niji_Icons/Shizuku.png" class="membericon">
+                    </label>
+
+                    <input id="Karin" type="radio" name="Color" onchange="colorSet(4)">
+                    <label for="Karin">
+                        <img src="./Niji_Icons/Karin.png" class="membericon">
+                    </label>
+                    <input id="Ai" type="radio" name="Color" onchange="colorSet(5)">
+                    <label for="Ai">
+                        <img src="./Niji_Icons/Ai.png" class="membericon">
+                    </label>
+                    <input id="Kanata" type="radio" name="Color" onchange="colorSet(6)">
+                    <label for="Kanata">
+                        <img src="./Niji_Icons/Kanata.png" class="membericon">
+
+                    </label>
+                    <input id="Setsuna" type="radio" name="Color" onchange="colorSet(7)">
+                    <label for="Setsuna">
+                        <img src="./Niji_Icons/Setsuna.png" class="membericon">
+                    </label>
+                    <input id="Emma" type="radio" name="Color" onchange="colorSet(8)">
+                    <label for="Emma">
+                        <img src="./Niji_Icons/Emma.png" class="membericon">
+                    </label>
+                    <input id="Rina" type="radio" name="Color" onchange="colorSet(9)">
+                    <label for="Rina">
+                        <img src="./Niji_Icons/Rina.png" class="membericon">
+                    </label>
+
+                    <input id="Shioriko" type="radio" name="Color" onchange="colorSet(10)">
+                    <label for="Shioriko">
+                        <img src="./Niji_Icons/Shioriko.png" class="membericon">
+                    </label>
+                    <input id="Mia" type="radio" name="Color" onchange="colorSet(11)">
+                    <label for="Mia">
+                        <img src="./Niji_Icons/Mia.png" class="membericon">
+                    </label>
+                    <input id="Lanzhu" type="radio" name="Color" onchange="colorSet(12)">
+                    <label for="Lanzhu">
+                        <img src="./Niji_Icons/Lanzhu.png" class="membericon">
+                    </label>
+
+                    <input id="Yu" type="radio" name="Color" onchange="colorSet(13)">
+                    <label for="Yu">
+                        <img src="./Niji_Icons/Yu.png" class="membericon">
+                    </label>
+
+                    <br>
+
+                    <input id="DEFAULT" type="radio" name="Color" onchange="colorSet(0)">
+                    <label for="DEFAULT">
+                        <img src="./Niji_Icons/DEFAULT.png" class="othericon">
+                    </label>
+                    <input id="SHUFFLE_COLOR" type="radio" name="Color" onchange="colorSet(100)">
+                    <label for="SHUFFLE_COLOR">
+                        <img src="./Niji_Icons/SHUFFLE.png" class="othericon">
+                    </label>
+                    <input id="RAINBOW" type="radio" name="Color" onchange="colorSet(99)">
+                    <label for="RAINBOW">
+                        <img src="./Niji_Icons/RAINBOW.png" class="othericon">
+                    </label>
+                </div>
+            </div>
+
+            <!--BBS用パネル-->
+            <div id="panel3" class="tab_panel bbs_panel">
+                <div class="panel_text">
+                    文字を入力して送信すると、スクロールしながら表示します。
+                </div>
+                <input type="text" class="bbs_textbox" id="bbstext" placeholder="文字を入力">
+                <br>
+                <br>
+                <input id="SEND" type="radio" name="Select" onchange="textSet()">
+                <label for="SEND">
+                    <img src="./Niji_Icons/SEND.png" class="othericon">
+                </label>
+                <br>
+                <span id="textlog">&nbsp;</span>
+            </div>
+        </div>
+    </div>
+
+    <!--デバッグ用-->
+
+    <!--
+    <form id="send_mixdata">
+        <p>
+            <label for="par1">ボード番号</label>
+            <input name="boardid" id="par1">
+        </p>
+        <p>
+            <label for="par2">色</label>
+            <input name="colorid" id="par2">
+        </p>
+        <p>
+            <label for="par3">文字</label>
+            <input name="bbstext" id="par3">
+        </p>
+    </form>
+    <p>
+        <button type="button" id="send_mixdata">入力値と固定値を送信する</button>
+    </p>
+    <div id="mixdata_response">
+    </div>
+    -->
+    <hr>
+</body>
+<footer class="twitter">
+    <p>Developed by えー</p><a href="https://twitter.com/e_rm_?ref_src=twsrc%5Etfw" class="twitter-follow-button"
+        data-show-count="false">Follow @e_rm_</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</footer>
+
+</html>
