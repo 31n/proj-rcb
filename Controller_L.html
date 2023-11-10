@@ -99,7 +99,8 @@
 
             // データ送信
             xhr = new XMLHttpRequest;
-            // xhr.withCredentials = true;
+            xhr.withCredentials = true;
+            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.onload = function() {
                 var res = xhr.responseText;
                 if (res.length > 0) alert(res);
@@ -108,7 +109,6 @@
                 alert("Error");
             }
             xhr.open('post', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(json_text);
         }
 
