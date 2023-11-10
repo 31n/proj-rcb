@@ -104,12 +104,13 @@
                 var res = xhr.responseText;
                 if (res.length > 0) alert(res);
             };
-            xhr.onerror = function() {
-                alert("Error");
-            }
+
             xhr.open('POST', url, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(json_text);
+            xhr.onerror = function() {
+                alert("Error");
+            }
         }
 
         // URLパラメータとして送信できる形式にフォーマットを変更する.
