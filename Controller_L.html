@@ -99,7 +99,7 @@
 
             // データ送信
             xhr = new XMLHttpRequest;
-            xhr.withCredentials = true;
+            // xhr.withCredentials = true;
             xhr.onload = function() {
                 var res = xhr.responseText;
                 if (res.length > 0) alert(res);
