@@ -47,15 +47,13 @@
                 const newLbl = document.createElement("label");
 
                 // 各種オプションを設定.
-                newBtn.setAttribute("id", Def_DATA[i]["BOARD"]);
+                newBtn.setAttribute("id", "board_" + i);
                 newBtn.setAttribute("type", "radio");
                 newBtn.setAttribute("name", "Select");
-                newBtn.onchange = function () {
-                    boardSet(i-1);
-                }
+                newBtn.setAttribute("onchange", "boardSet(" + i + ')');
                 newSpn.setAttribute("class", "boardicon");
                 newSpn.innerHTML = Def_DATA[i]["COMMENT"];
-                newLbl.setAttribute("for", Def_DATA[i]["BOARD"]);
+                newLbl.setAttribute("for", "board_" + i);
 
                 // 追加する.
                 newLbl.appendChild(newSpn);
@@ -76,7 +74,7 @@
         // 表情変更=boardidをセットして送信する.
         function boardSet(id) {
             console.log(id);
-            console.log(Def_DATA[0].AUDIO);
+            console.log(Def_DATA[id].AUDIO);
             var data = {
                 BOARD: Def_DATA[id].BOARD,
                 ID: String(id),
@@ -228,7 +226,7 @@
     </script>
 
     <header class="title">
-        <p class="top">璃奈ちゃんボードコントローラ2</p><br>
+        <p class="top">璃奈ちゃんボードコントローラ(L)</p><br>
     </header>
 
     <div class="tab_wrap">
