@@ -81,7 +81,8 @@
                 BOARD: Def_DATA[id].BOARD,
                 ID: String(id),
                 AUDIO: Def_DATA[id].AUDIO,
-                LAST_UPDATE: getDateTime()
+                LAST_UPDATE: getDateTime(),
+                COLOR: "ZZZ"
             };
             PostToServer(data);
             console.log(data);
