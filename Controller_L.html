@@ -79,12 +79,28 @@
             console.log(Def_DATA[0].AUDIO);
             var data = {
                 BOARD: Def_DATA[id].BOARD,
-                ID: id,
+                ID: String(id),
                 AUDIO: Def_DATA[id].AUDIO,
-                LAST_UPDATE: "2023"
+                LAST_UPDATE: getDateTime()
             };
             PostToServer(data);
             console.log(data);
+        }
+
+        function getDateTime() {
+            var now = new Date();
+            var rtn = "";
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var date = now.getDate();
+            var hour = now.getHours();
+            var min = now.getMinutes();
+            var sec = now.getSeconds();
+
+            rtn = String(year) + String(month) + String(date) 
+            + String(hour) + String(min) + String(sec);
+
+            return rtn;
         }
 
         function PostToServer(json) {
