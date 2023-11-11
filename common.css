@@ -22,6 +22,8 @@ header.title {
     left: 0;
     display: flex;
     align-items: center;
+    background-color: #F39802;
+    color: #FFFFFF;
 }
 
 p.top {
@@ -83,25 +85,25 @@ input[name="tab_btn"][type="radio"]{
 }
 
 .board_panel {
-    background-color: #f2c7c2;
+    background-color: #DEEBBC;
     padding-top: 10px;
     padding-bottom: 30px;
 }
 
 .color_panel {
-    background-color: #dadff2;
+    background-color: #E8BACB;
     padding-top: 10px;
     padding-bottom: 30px;
 }
 
 .bbs_panel {
-    background-color: #f0daf2;
+    background-color: #F0D8E2;
     padding-top: 10px;
     padding-bottom: 30px;
 }
 
 #tab1:checked ~ .tab_area .tab1_label{
-    background:#f28377;
+    background:#D2EA8E;
     color:#000;
 }
 
@@ -110,7 +112,7 @@ input[name="tab_btn"][type="radio"]{
 }
 
 #tab2:checked ~ .tab_area .tab2_label{
-    background:#778ff2;
+    background:#4966AF;
     color:#000;
 }
 
@@ -119,7 +121,7 @@ input[name="tab_btn"][type="radio"]{
 }
 
 #tab3:checked ~ .tab_area .tab3_label{
-    background:#e677f2;
+    background:#EFB2CB;
     color:#000;
 }
 
@@ -172,7 +174,7 @@ input[type="radio"][name="Select"]:checked + label span,[name="Color"]:checked +
     background: #E5E9EA;
     margin-bottom: 10px;
     vertical-align: middle;
-    border: 3px solid #f2c7c2;
+    border: 3px solid #B7CC7C;
     border-radius: 13px;
     user-select: none;
     text-align: left;
@@ -183,10 +185,6 @@ input[type="radio"][name="Select"]:checked + label span,[name="Color"]:checked +
     display: inline-block;
     width: 70%;
     font-size: 120%;
-}
-
-  
-input[type=checkbox] {
 }
 
 .Led {
