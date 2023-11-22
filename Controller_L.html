@@ -65,7 +65,7 @@
         // デバッグフラグを取得する.
         function setInitial() {
             let url = new URL(window.location.href)
-            let param = url.searchParams;
+            let params = url.searchParams;
             let dev = params.get("devmode")
             if (dev == "true"){
                 dev_mode = true;
