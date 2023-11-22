@@ -17,9 +17,10 @@
     <meta name="theme-color" content="#f3db76" />
 </head>
 
-<body onload="getBaseData()">
+<body onload="getBaseData(), setInitial()">
     <script>
         var Def_DATA
+        var dev_mode = new Boolean(false);
         // Lambda経由で基礎データを取得する.
         function getBaseData() {
             // ボードマスタを取得するLambdaへのリンク.
@@ -33,12 +34,11 @@
             }
             var json = XHR.responseText;
             Def_DATA = JSON.parse(json);
-            console.log(Def_DATA.length);
 
             for (var i = 0; i < Def_DATA.length; ++i) {
                 var line = Def_DATA[i];
                 // line = JSON.parse(line);
-                console.log(line);
+                // console.log(line);
 
                 // 定義.
                 const parent = document.getElementById("boardbuttons");
@@ -61,10 +61,22 @@
                 parent.appendChild(newLbl);
             }
         }
+
+        // デバッグフラグを取得する.
+        function setInitial() {
+            let param = url.searchParams;
+            let dev = params.get("devmode")
+            if (dev == "true"){
+                dev_mode = true;
+            } else {
+                dev_mode = false;
+            }
+        }
+
         // 色変更=coloridをセットして送信する.
         function colorSet(id) {
             var data = { colorid: id };
-            console.log(id);
+            // console.log(id);
             var XHR = new XMLHttpRequest();
             XHR.open("POST", "sv.py");
             XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -73,8 +85,8 @@
 
         // 表情変更=boardidをセットして送信する.
         function boardSet(id) {
-            console.log(id);
-            console.log(Def_DATA[id].AUDIO);
+            // console.log(id);
+            // console.log(Def_DATA[id].AUDIO);
             var data = {
                 BOARD: Def_DATA[id].BOARD,
                 // ID: "String(id)",
@@ -84,7 +96,9 @@
                 COLOR: "ZZZ"
             };
             PostToServer(data);
-            console.log(data);
+            if (dev_mode) {
+                console.log("boardSet()による送信データ: " + data);
+            }
         }
 
         function getDateTime() {
@@ -106,9 +120,9 @@
         function PostToServer(json) {
             // データ整形
             var json_text = JSON.stringify(json);
-
-            console.log(json_text);
-
+            if (dev_mode) {
+                console.log("PostToServer()で送信するJSONデータ(json_text): " + json_text);
+            }
             // ボードトランザクションを取得するLambdaへのリンク.
             //var url = "https://ej5e4jssi9.execute-api.ap-northeast-1.amazonaws.com/default/RCB_CL";
             var url = "https://bnrnrllejgy53xgmp775tdqwma0stvsx.lambda-url.ap-northeast-1.on.aws/";
@@ -118,14 +132,16 @@
             // xhr.withCredentials = true;
             xhr.onload = function() {
                 var res = xhr.responseText;
-                if (res.length > 0) alert(res);
+                if (res.length > 0 && dev_mode) {
+                    alert("データ送信失敗(PostToServer()): " + res);
+                }
             };
 
             xhr.open('POST', url, true);
             xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
             xhr.send(json_text);
             xhr.onerror = function() {
-                alert("Error");
+                alert("ボード変更失敗");
             }
         }
 
