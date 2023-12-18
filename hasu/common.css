@@ -1,0 +1,45 @@
+.pc {
+    display: inline !important;
+}
+.sp {
+    display: none !important;
+}
+ 
+@media only screen and (max-width: 750px) {
+    .pc { display: none !important; }
+    .sp { display: inline !important; }
+}
+
+header.title {
+    box-sizing: border-box;
+    font-size: 1.7rem;
+    font-weight: bolder;
+    font-family: 'Oranienbaum', serif;
+    font-family: 'Zen Kaku Gothic Antique', sans-serif;
+    width: 100%;
+    height: 90px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    align-items: center;
+    background-color: #06346F;
+    color: #FFFFFF;
+}
+
+body {
+    font-family: 'Oranienbaum', serif;
+    font-family: 'Zen Kaku Gothic Antique', sans-serif;
+    background-color: #DDDDDD;
+}
+
+p.top {
+    margin-left: 10px;
+}
+
+div.main {
+    padding-top: 120px !important;
+}
+
+.canvas-img {
+    display: none;
+}

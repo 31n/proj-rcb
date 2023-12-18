@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>蓮ノ空HPDフレーム</title>
+        <!--キャッシュ保存しない-->
+        <meta http-equiv="Cache-Control" content="no-store">
+        <!--スマホでタップしたときに拡大しない-->
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+        <!--スタイルシート読み込み-->
+        <link rel="stylesheet" href="./common.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Zen+Kaku+Gothic+Antique:wght@300;500&display=swap" rel="stylesheet">
+        <!--ステータスバー等の色変更-->
+        <meta name="theme-color" content="#06346F" />
+    </head>
+    <body onload="setBG()">
+
+        <header class="title">
+            <p class="top">蓮ノ空お祝いフレーム加工補助ツール</p><br>
+        </header>
+
+        <div class="main">
+            <form>
+                <input type="file" accept='image/*' onchange="previewImage(this);">
+                <select id="member">
+                    <option value="103kozue">2023/ 6/15 梢</option>
+                    <option value="103kaho">2023/ 5/22 花帆</option>
+                    <option value="103tsuzuri">2023/11/17 綴理</option>
+                    <option value="103rurino">2023/ 8/31 瑠璃乃</option>
+                    <option value="103megumi" selected>2023/12/20 慈</option>
+                    <option value="103sayaka">2024/ 1/13 さやか</option>
+                </select>
+                <input type="checkbox" id="showFrame">フレーム画像を表示する
+            </form>
+            <canvas id="preview" width="890" height="501"></canvas>
+        </div>
+        <div class="slider">
+            <span>-</span>
+            <input id="zoomSlider" type="range">
+            <span>+</span>
+        </div>
+
+        <script src="myscript.js">
+        </script>
+        <button onclick="Exp()">画像生成</button>
+        <div><img crossOrigin="Anonymous" id="out" class="canvas-img" src=""></div>
+    </body>
+</html>
