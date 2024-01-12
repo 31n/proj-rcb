@@ -77,12 +77,20 @@
 
         // 色変更=coloridをセットして送信する.
         function colorSet(id) {
-            var data = { colorid: id };
             // console.log(id);
-            var XHR = new XMLHttpRequest();
-            XHR.open("POST", "sv.py");
-            XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            XHR.send(EncodeHTMLForm(data));
+            // console.log(Def_DATA[id].AUDIO);
+            var data = {
+                BOARD: "",
+                // ID: "String(id)",
+                ID: "1",
+                AUDIO: "",
+                LAST_UPDATE: getDateTime(),
+                COLOR: id
+            };
+            PostToServer(data);
+            if (dev_mode) {
+                console.log("boardSet()による送信データ: " + data);
+            }
         }
 
         // 表情変更=boardidをセットして送信する.
